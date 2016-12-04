@@ -66,10 +66,7 @@ gtk_css_widget_node_queue_callback (GtkWidget     *widget,
   GtkCssNode *node = user_data;
 
   gtk_css_node_invalidate_frame_clock (node, TRUE);
-  if (GTK_IS_CONTAINER (widget))
-    _gtk_container_queue_restyle (GTK_CONTAINER (widget));
-  else
-    gtk_widget_queue_restyle (widget);
+  _gtk_container_queue_restyle (GTK_CONTAINER (widget));
 
   return G_SOURCE_CONTINUE;
 }
@@ -97,7 +94,8 @@ gtk_css_widget_node_queue_validate (GtkCssNode *node)
 {
   GtkCssWidgetNode *widget_node = GTK_CSS_WIDGET_NODE (node);
 
-  if (widget_node->widget && _gtk_widget_is_toplevel (widget_node->widget))
+  if (widget_node->widget && _gtk_widget_is_toplevel (widget_node->widget) &&
+      GTK_IS_CONTAINER (widget_node->widget))
     widget_node->validate_cb_id = gtk_widget_add_tick_callback (widget_node->widget,
                                                                 gtk_css_widget_node_queue_callback,
                                                                 node,
@@ -109,7 +107,8 @@ gtk_css_widget_node_dequeue_validate (GtkCssNode *node)
 {
   GtkCssWidgetNode *widget_node = GTK_CSS_WIDGET_NODE (node);
 
-  if (widget_node->widget && _gtk_widget_is_toplevel (widget_node->widget))
+  if (widget_node->widget && _gtk_widget_is_toplevel (widget_node->widget) &&
+      GTK_IS_CONTAINER (widget_node->widget))
     gtk_widget_remove_tick_callback (widget_node->widget,
                                      widget_node->validate_cb_id);
 }
