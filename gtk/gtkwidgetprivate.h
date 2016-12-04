@@ -90,6 +90,10 @@ struct _GtkWidgetPrivate
   /* SizeGroup related flags */
   guint have_size_groups      : 1;
 
+  guint restyle_pending       : 1;
+  guint resize_handler;
+  GdkFrameClock *resize_clock;
+
   /* Alignment */
   guint   halign              : 4;
   guint   valign              : 4;
@@ -313,6 +317,7 @@ GtkWidget *       gtk_widget_get_focus_child               (GtkWidget *widget);
 void              gtk_widget_forall                        (GtkWidget            *widget,
                                                             GtkCallback           callback,
                                                             gpointer              user_data);
+void              gtk_widget_queue_restyle                 (GtkWidget *widget);
 
 /* inline getters */
 
